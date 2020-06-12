@@ -27,7 +27,10 @@ export default {
   name: '',
   data () {
     return {
-      data:[1],
+      data:[{
+        type:1,
+        list:[]
+      }],
       ratio:1,//放大缩小比例,
       // a:0
     }
