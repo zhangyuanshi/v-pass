@@ -6,7 +6,7 @@
     </el-drawer>
     <!-- 右边滑块end -->
 
-    <div v-if="moduleType==1" class="add_item">
+    <div v-if="moduleType.type==1" class="add_item">
       <!-- <div > -->
         <div @click="detailR = true" class="item_main">
           <div class="add_header">
@@ -60,19 +60,25 @@
      
     </div>
 <!-- type2 -->
-    <div v-if="moduleType==2" class="item2">
+    <div v-if="moduleType.type==2" class="item2">
       <div class="item2_border">
           <div class="item2_add" @click="add2()">+</div>
         
-          <div class="item2_item" v-for="(ele,i) in filter" :key=i >
+          <div class="item2_item" v-for="(ele,i) in moduleType.list" :key=i >
                 <div class="item2_title">所有数据可进行该分支</div>
                 <div class="item2_filter">筛选数据</div>
-          
                 <el-popover placement="right" width="200" trigger="click" visible-arrow=false>
-                    <ul><li @click="add(1)">A1</li><li @click="add(2)">B2</li><li @click="add(3)">C3</li> </ul>
+                    <ul>
+                      <li @click="addz(1,i,moduleType.list)">A1</li>
+                      <li @click="addz(2,i,moduleType.list)">B2</li>
+                      <li @click="addz(3,i,moduleType.list)">C3</li> 
+                    </ul>
                     <div class="branch_add_add" slot="reference">+</div>
                 </el-popover>
-               <module   v-for="(child,index) in ele.child" :key=index></module>
+                <!-- {{ele}} -->
+                <div v-if=ele.type&&ele.list>
+                  <module  v-for="(child,index) in ele.list" :key=index :moduleType=child :dataArr=ele.child :index=index></module>
+                </div>
           </div>
         
       </div>
@@ -89,7 +95,7 @@
 
     </div>
     <!-- type3 -->
-    <div v-if="moduleType==3">C</div>
+    <div v-if="moduleType.type==3">C</div>
   </div>
 </template>
 
@@ -98,30 +104,56 @@ export default {
   name: "module",
   data() {
     return {
-      filter:[{child:[]},{child:[1]}],
+      filter:[{list:[]},{list:[]}],
       chartData: [],//模块类型数组
       detailR: false,//右边滑块是否显示
       show:false
       // timer: null
     };
   },
-  methods: {
-    add(n) {
-      console.log(this.dataArr,'-=-=-',this.index)
-      this.dataArr.splice(this.index, 0, n);
-      console.log("chartData:", this.chartData);
-      this.$emit("childByValue", this.chartData);
-      this.$refs.ul.style.display = 'none'
-      this.show = false
-    },
-    add2(){
-      this.filter.push(2)
-       console.log("------------chartData:", this.chartData);
-        console.log("-----------filter:", this.filter);
+  created(){
+    console.log("this,dataArr",this.dataArr,'-=-=',this.index)
+    if(this.dataArr){
+      this.filter = this.dataArr[this.index].list
+      console.log ("112",this.filter )
     }
   },
-  created(){
-    console.log(this.dataArr)
+  methods: {
+    add(n) {
+      var obj = {
+        type:n,
+        list:[]
+      }
+      if(n==2){
+        obj.list=this.filter
+      }
+      console.log("----",this.dataArr)
+      this.dataArr.splice(this.index+1, 0, obj);
+      // console.log("chartData:", this.chartData);
+      // this.$emit("childByValue", this.chartData);
+      // this.$refs.ul.style.display = 'none'
+      // this.show = false
+    },
+    add2(){
+      this.filter.push({list:[]})
+        console.log('dataArr',this.dataArr)
+         
+    },
+    addz(n,index,arr){
+      console.log('++++++',this.filter,arr,index)
+       var obj = {
+         type:n,
+        list:[]
+      }
+      if(n==2){
+        obj.list=this.filter
+      }
+      let a = arr[index].list.splice(index, 0, obj)
+      // let b = arr.splice(index+1,1 ,a)
+      console.log(a ,'-=-=-=-=')
+      this.dataArr.splice(this.index, 0, arr);
+      console.log(JSON.stringify(this.dataArr))
+    }
   },
   props: ["moduleType","dataArr","index"]//moduleType:模块类型
 };
