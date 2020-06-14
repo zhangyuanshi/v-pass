@@ -67,13 +67,17 @@
           <div class="item2_item" v-for="(ele,i) in moduleType.list" :key=i >
                 <div class="item2_title">所有数据可进行该分支</div>
                 <div class="item2_filter">筛选数据</div>
-          
                 <el-popover placement="right" width="200" trigger="click" visible-arrow=false>
-                    <ul><li @click="addz(1,i+1)">A1</li><li @click="addz(2,i+1)">B2</li><li @click="addz(3,i+1)">C3</li> </ul>
+                    <ul>
+                      <li @click="addz(1,i,moduleType.list)">A1</li>
+                      <li @click="addz(2,i,moduleType.list)">B2</li>
+                      <li @click="addz(3,i,moduleType.list)">C3</li> 
+                    </ul>
                     <div class="branch_add_add" slot="reference">+</div>
                 </el-popover>
-                <div v-if=ele.lsit>
-                  <module  v-for="(child,index) in ele.child" :key=index :moduleType=child :dataArr=ele.child :index=index+1></module>
+                <!-- {{ele}} -->
+                <div v-if=ele.type&&ele.list>
+                  <module  v-for="(child,index) in ele.list" :key=index :moduleType=child :dataArr=ele.child :index=index></module>
                 </div>
           </div>
         
@@ -107,9 +111,15 @@ export default {
       // timer: null
     };
   },
+  created(){
+    console.log("this,dataArr",this.dataArr,'-=-=',this.index)
+    if(this.dataArr){
+      this.filter = this.dataArr[this.index].list
+      console.log ("112",this.filter )
+    }
+  },
   methods: {
     add(n) {
-      // console.log(this.dataArr,'-=-=-',this.index)
       var obj = {
         type:n,
         list:[]
@@ -117,7 +127,8 @@ export default {
       if(n==2){
         obj.list=this.filter
       }
-      this.dataArr.splice(this.index, 0, obj);
+      console.log("----",this.dataArr)
+      this.dataArr.splice(this.index+1, 0, obj);
       // console.log("chartData:", this.chartData);
       // this.$emit("childByValue", this.chartData);
       // this.$refs.ul.style.display = 'none'
@@ -125,28 +136,24 @@ export default {
     },
     add2(){
       this.filter.push({list:[]})
-      //  console.log("------------chartData:", this.chartData);
-        // console.log("-----------filter:", this.filter);
         console.log('dataArr',this.dataArr)
          
     },
-    addz(n,index){
-      this.filter.splice(index, 0, obj)
+    addz(n,index,arr){
+      console.log('++++++',this.filter,arr,index)
        var obj = {
-        type:n,
+         type:n,
         list:[]
       }
       if(n==2){
         obj.list=this.filter
       }
-      
-      
-      this.dataArr.splice(this.index, 0, obj);
+      let a = arr[index].list.splice(index, 0, obj)
+      // let b = arr.splice(index+1,1 ,a)
+      console.log(a ,'-=-=-=-=')
+      this.dataArr.splice(this.index, 0, arr);
       console.log(JSON.stringify(this.dataArr))
     }
-  },
-  created(){
-    console.log(this.dataArr)
   },
   props: ["moduleType","dataArr","index"]//moduleType:模块类型
 };
