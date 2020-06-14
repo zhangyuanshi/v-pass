@@ -10,7 +10,7 @@
       <div @click="sx" class="sx">-</div>
     </div>
     <div id="view" ref='view'>
-       <module v-for="(item,index) in data" :key="index" :moduleType=item :dataArr=data :index=index+1></module>
+       <module v-for="(item,index) in data" :key="index" :moduleType=item :dataArr=data :index=index></module>
 
       <div class="end">
         <div class="end_btn">结束</div>
@@ -27,10 +27,13 @@ export default {
   name: '',
   data () {
     return {
-      data:[1],
+      data:[
+        { type:1,list:[]},
+        { type:2,list:[{type:1,list:[{type:1,list:[]}]},{type:2,list:[]}]}
+      ],
       ratio:1,//放大缩小比例,
       // a:0
-    }
+    } 
   },
   components:{
     module,
