@@ -1,58 +1,93 @@
 <template>
   <div class="add">
-    <!-- <el-button type="text" @click="table = true">打开嵌套表格的 Drawer</el-button> -->
-
-    <el-drawer title="我嵌套了表格!" :visible.sync="table" direction="rtl" size="50%">
-      <el-table :data="gridData">
-        <el-table-column property="date" label="日期" width="150"></el-table-column>
-        <el-table-column property="name" label="姓名" width="200"></el-table-column>
-        <el-table-column property="address" label="地址"></el-table-column>
-      </el-table>
+    <!-- 右边滑块 -->
+    <el-drawer title="我嵌套了表格!" :visible.sync="detailR" direction="rtl" size="50%">
+        滑块数据详情
     </el-drawer>
+    <!-- 右边滑块end -->
 
-    <div v-if="items==1" class="add_item">
-      <!-- <el-button type="text" @click="table = true"> -->
-      <div @click="table = true">
-        <div class="add_header">
-          <span>申请人</span>
-          <img src="@/assets/logo.png" alt />
-        </div>
-        <div class="add_main">
-          <div class="add_text">工作区域可填</div>
-          <div class="add_footer">
-            <div class="add_footer_left">
-              <el-tooltip class="item" effect="dark" content="点击查看可编辑字段" placement="bottom-start">
-                <span>
-                  <img src="@/assets/logo.png" alt />
-                  2
-                </span>
-              </el-tooltip>
-              <el-tooltip class="item" effect="dark" content="点击查看隐藏字段" placement="bottom-start">
-                <span>
-                  <img src="@/assets/logo.png" alt />
-                  4
-                </span>
-              </el-tooltip>
-              <el-tooltip class="item" effect="dark" content="点击查看仅可见字段" placement="bottom-start">
-                <span>
-                  <img src="@/assets/logo.png" alt />
-                  3
-                </span>
-              </el-tooltip>
-            </div>
-            <div class="add_footer_right">
-              <el-tooltip class="item" effect="dark" content="复制节点" placement="bottom">
-                <span>
-                  <img src="@/assets/logo.png" alt />
-                </span>
-              </el-tooltip>
+    <div v-if="moduleType.type==1" class="add_item">
+      <!-- <div > -->
+        <div @click="detailR = true" class="item_main">
+          <div class="add_header">
+            <span>申请人</span>
+            <img src="@/assets/logo.png" alt />
+          </div>
+          <div class="add_main">
+            <div class="add_text">工作区域可填</div>
+            <div class="add_footer">
+              <div class="add_footer_left">
+                <el-tooltip class="item" effect="dark" content="点击查看可编辑字段" placement="bottom-start">
+                  <span>
+                    <img src="@/assets/logo.png" alt />
+                    2
+                  </span>
+                </el-tooltip>
+                <el-tooltip class="item" effect="dark" content="点击查看隐藏字段" placement="bottom-start">
+                  <span>
+                    <img src="@/assets/logo.png" alt />
+                    4
+                  </span>
+                </el-tooltip>
+                <el-tooltip class="item" effect="dark" content="点击查看仅可见字段" placement="bottom-start">
+                  <span>
+                    <img src="@/assets/logo.png" alt />
+                    3
+                  </span>
+                </el-tooltip>
+              </div>
+              <div class="add_footer_right">
+                <el-tooltip class="item" effect="dark" content="复制节点" placement="bottom">
+                  <span>
+                    <img src="@/assets/logo.png" alt />
+                  </span>
+                </el-tooltip>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-
+   <!-- </div> -->
       <div class="add_line">
-        <!-- <div class="add_add">+</div> -->
+        <el-popover :value='show' placement="right" width="200" trigger="click" visible-arrow=false>
+          <ul >
+            <li @click="add(1)">A1</li>
+            <li @click="add(2)">B2</li>
+            <li @click="add(3)">C3</li>
+          </ul>
+          <div class="add_add" slot="reference">+</div>
+        </el-popover>
+      </div>
+     
+    </div>
+<!-- type2 -->
+    <div v-if="moduleType.type==2" class="item2" ref="item2" style="width:540px;">
+      <div class="item2_border">
+          <div class="item2_add" @click="add2(index)">+</div>
+          <div class="dispaly">
+          <div class="item2_item" v-for="(ele,i) in moduleType.list" :key=i >
+                <div class="item2_top_line"></div>
+                <div class="item2_block">
+                  <div class="item2_title">所有数据可进行该分支</div>
+                  <div class="item2_filter">筛选数据</div>
+                </div>
+                <div class="add_line ">
+                <el-popover placement="right" width="200" trigger="click" visible-arrow=false>
+                    <ul>
+                      <li @click="addz(1,i,moduleType.list,index)">{{index}}A1</li>
+                      <li @click="addz(2,i,moduleType.list,index)">B2</li>
+                      <li @click="addz(3,i,moduleType.list,index)">C3</li> 
+                    </ul>
+                    <div class="branch_add_add" slot="reference">+</div>
+                </el-popover>
+                </div>
+                <!-- {{ele}} -->
+                <div v-if=ele.type&&ele.list>
+                  <add  v-for="(child,index) in ele.list" :key=index :moduleType=child :dataArr=ele.list :index=index></add>
+                </div>
+          </div>
+        </div>
+      </div>
+      <div class="add_line">
         <el-popover placement="right" width="200" trigger="click" visible-arrow=false>
           <ul>
             <li @click="add(1)">A1</li>
@@ -60,31 +95,12 @@
             <li @click="add(3)">C3</li>
           </ul>
           <div class="add_add" slot="reference">+</div>
-          <!-- <el-button >click 激活</el-button> -->
         </el-popover>
       </div>
-      <!-- </el-button> -->
-    </div>
 
-    <div v-if="items==2" class="item2" ref="item2">
-      <div class="item2_border">
-        <div class="item2_add" @click="add2()">+</div>
-        <div class="item2_break">
-          <div class="item2_item" v-for="(ele,i) in filter" :key=i >
-            <div class="item2_line"></div>
-            <div class="item2_title">所有数据可进行该分支</div>
-            <div class="item2_filter">筛选数据</div>
-            <div class="add_line">
-              <div class="add_add">+</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="add_line">
-        <div class="add_add">+</div>
-      </div>
     </div>
-    <div v-if="items==3">C</div>
+    <!-- type3 -->
+    <div v-if="moduleType.type==3">C</div>
   </div>
 </template>
 
@@ -93,38 +109,68 @@ export default {
   name: "add",
   data() {
     return {
-      filter:[1,1],
-      chartData: [],
-      table: false,
-      dialog: false,
-      loading: false,
-      gridData: [
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        }
-      ],
-      timer: null
+      filter:[{type:1,list:[]},{type:1,list:[]}],
+      chartData: [],//模块类型数组
+      detailR: false,//右边滑块是否显示
+      show:false
+      // timer: null
     };
   },
+  created(){
+    // console.log("this,dataArr",this.dataArr,'-=-=',this.index)
+    // if(this.dataArr){
+    //   this.filter = this.dataArr[this.index].list
+    //   // console.log ("112",this.filter )
+    // }
+  },
+   mounted(){
+     if(this.dataArr){
+
+      // console.log('ref',this.$refs.item2,this.dataArr[this.index].list)
+      
+      //  this.$refs.item2.style.width = (this.dataArr[this.index].list.length)*270 +'px'   
+      }
+   },
   methods: {
     add(n) {
-      console.log(this.dataArr,'-=-=-',this.index)
-      this.dataArr.splice(this.index, 0, n);
-      console.log("chartData:", this.chartData);
-      this.$emit("childByValue", this.chartData);
+      var obj = {
+        type:n,
+        list:[]
+      }
+      if(n==2){
+        obj.list=[{type:1,list:[]},{type:1,list:[]}]
+      }
+      console.log("----",this.dataArr,'obj',obj)
+      this.dataArr.splice(this.index+1, 0, obj);
+      // console.log("chartData:", this.chartData);
+      // this.$emit("childByValue", this.chartData);
+      // this.$refs.ul.style.display = 'none'
+      // this.show = false
+    },
+    add2(index){
+      this.filter.push({type:1,list:[]})
+      if(this.dataArr){
+        this.dataArr[index].list.push({type:1,list:[]})
+      }
+      console.log('dataArr',this.dataArr)
 
     },
-    add2(){
-      this.filter.push(2)
-      this.$refs.item2 = ''
+    addz(n,i,arr,index){
+      console.log('0000000000',index,arr,i)
+       var obj = {
+          type:n,
+          list:[]
+        }
+        if(n==2){
+          obj.list=this.filter
+        }
+      let a = arr[i].list.splice(i, 0, obj)
+      // let b = arr.splice(index+1,1 ,a)
+      this.dataArr.splice(index, 0, arr);
+      console.log("完",JSON.stringify(this.dataArr))
     }
   },
-  created(){
-    console.log(this.dataArr)
-  },
-  props: ["items","dataArr","index"]
+  props: ["moduleType","dataArr","index"]//moduleType:模块类型
 };
 </script>
 
@@ -135,17 +181,26 @@ li {
 }
 .add {
   width: 100%;
-  margin-bottom: 100px;
+  /* margin-bottom: 100px; */
+  /* border: solid 2px darkorchid; */
 }
 
 .add_item {
   box-sizing: border-box;
   width: 270px;
-  height: 120px;
+  /* height: 120px; */
   margin: auto;
-  background-color: #fff;
-  box-shadow: 0px 6px 2px 2px rgba(0, 0, 0, 0.1);
+  
+ 
   cursor: pointer;
+  /* border: solid 1px; */
+}
+.item_main{
+   width: 270px;
+  height: 120px;
+  box-shadow: 0 2px 3px 0 rgba(0,0,0,.1);
+   background-color: #fff;
+   /* border: solid 1px red; */
 }
 
 img {
@@ -213,9 +268,9 @@ img {
 }
 
 .add_footer {
-  line-height: 40px;
+  /* line-height: 40px; */
   display: flex;
-  height: 40px;
+  /* height: 40px; */
   color: #6b737b;
 }
 .add_footer span {
@@ -249,7 +304,7 @@ img {
   position: relative;
 }
 
-.add_add {
+.add_add,.branch_add_add{
   position: absolute;
   top: 50%;
   transform: translate(-50%, -50%);
@@ -274,20 +329,24 @@ img {
   color: #fff;
 }
 
-
+/* 分支 */
 
  .item2{
-   border-bottom: solid 1.5px #dfdfe8;
-   border-top: solid 1.5px #dfdfe8;
-   width: 500px;
-   height: 191px;
-   margin: auto;
- }
  
- .item2_border{
-   
-   height: 192px;
-  border: solid 1px #5b6d85;
+   /* width: 540px; */
+   box-sizing: border-box;
+   margin: auto;
+   /* border: solid 1px red; */
+  
+ }
+ .item2 .add{
+   margin: 0;
+ }
+ .item2_border{ 
+   /* height: 192px; */
+   position: relative;
+   border-top: double gold 1px;
+   border-bottom: double gold 1px;
    display: flex;
  }
 
@@ -305,44 +364,61 @@ img {
    border-radius: 50%;
  }
 
- .item2_break{
-   width: 100%;
-   height: 70px;
-   /* border: solid 1px red; */
-   position: absolute;
- }
+ 
 
  .item2_item{
-   border: solid 1px #dfdfe8;
+    /* margin: 50px 0 90px; */
+    transform: translateX(-50%);
+    position: relative;
+ }
 
-   background: red;
-    width: 270px;
-    height: 70px;
-    position: absolute;
-    top:30px;
- }
- .item2_item:first-of-type{
-   transform: translateX(-50%)
- }
  .item2_item:last-of-type{
-   right:0;
-   transform: translateX(50%)
+    transform: translateX(50%)
  }
 
- .item2_line {
-  display: block;
-  width: 1px;
-  height: 31px;
-  border-left: solid 1.5px #dfdfe8;
-  margin-left: 50%;
-  position: absolute;
-  top:-32px;
-}
+
  .item2_title{
-   line-height: 40px;
+   height: 60px;
+   line-height: 60px;
+   padding: 0 18px;
+   border-bottom: solid 1px #dfdfe8;
  }
 .item2_filter{
-   line-height: 31px;
+  height: 40px;
+   line-height: 40px;
+   padding: 0 18px;
+   color: #f5bc21;
 
+}
+
+.branch_add_add{
+  top: 50%;
+  left: 50%;
+}
+
+.item2_top_line{
+  display: block;
+  width: 0px;
+  height: 50px;
+  border: solid 1.5px #ebebf0;
+  margin: auto;
+  
+}
+
+.dispaly{
+  display: flex;
+  justify-content: center
+}
+
+.item2_block{
+  width: 270px;
+  height: 100px;
+  border: solid 1px red;
+  box-shadow: 0 1px 4px 0 rgba(25,30,40,.1);
+    background: white;
+    width: 270px;
+    height: 100px;
+    border-radius: 3px;
+    border: solid 1px darkgoldenrod;
 }
 </style>
