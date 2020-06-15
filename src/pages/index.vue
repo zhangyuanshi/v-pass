@@ -10,7 +10,8 @@
       <div @click="sx" class="sx">-</div>
     </div>
     <div id="view" ref='view'>
-       <module v-for="(item,index) in data" :key="index" :moduleType=item :dataArr=data :index=index></module>
+       <!-- <module v-for="(item,index) in data" :key="index" :moduleType=item :dataArr=data :index=index></module> -->
+       <add v-for="(item,index) in data" :key="index" :moduleType=item :dataArr=data :index=index></add>
 
       <div class="end">
         <div class="end_btn">结束</div>
@@ -22,6 +23,7 @@
 
 <script>
 import module from "../components/module"
+import add from "../components/add"
 // import set from "../components/set"
 export default {
   name: '',
@@ -29,7 +31,8 @@ export default {
     return {
       data:[
         { type:1,list:[]},
-        { type:2,list:[{type:1,list:[{type:1,list:[]}]},{type:2,list:[]}]}
+        { type:2,list:[{type:1,list:[]},{type:2,list:[]}]}
+        // { type:2,list:[{type:1,list:[{type:1,list:[]},{type:1,list:[]}]},{type:2,list:[]}]}
       ],
       ratio:1,//放大缩小比例,
       // a:0
@@ -37,6 +40,7 @@ export default {
   },
   components:{
     module,
+    add
     // set
   },
   created(){
